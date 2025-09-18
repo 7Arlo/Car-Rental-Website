@@ -11,7 +11,7 @@ export const signUp = async (req,res) =>{
         //  Step 1
 
         const {name,email,password,phone}= req.body || {}
-        console.log("1")
+        
         //  Step 2
         if(!name||!email||!password||!phone){
             return res.status(400).json({
@@ -48,12 +48,12 @@ export const signUp = async (req,res) =>{
         error: "Password must be at least 6 characters long."
     });
 }
-console.log("7")
+
 // Step 8 Hashing Password
  const salt= await bcrypt.genSalt(10)
  const hashedPassword = await bcrypt.hash(password,salt)
 
-console.log("8",hashedPassword)
+
 //  Step 9 Creating New User
 const newUser = await User.create({
     name,
