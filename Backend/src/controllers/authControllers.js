@@ -6,7 +6,6 @@ import { generateToken } from "../utils/generateToken.js";
 
 
 // Signup Controller 
-
 export const signUp = async (req,res) =>{
     try {
         //  Step 1
@@ -87,9 +86,31 @@ return res.status(201).json({
 
 export const logIn = async (req,res) =>{
     try {
+        const {email,password} = req.body || {}
+
+        let existingUser
+        let checkPassword
+
+        if(email){
+             existingUser = await User.findOne({email})
+        }
+        
+        if(existingUser){
+            checkPassword = await bcrypt.compare(password,existingUser?.password || "")  
+        }
+        if(!existingUser || !checkPassword ){
+            res.status(401).json({
+                sucess:false,
+                error:"Invalid email or password"
+            })
+        }
+
+        generateToken(existingUser._id,existingUser.role,res)
+
         res.status(200).json({
            sucess:true,
-           message:"Login successful"
+           message:"Login successful",
+           user:existingUser
         })
     } catch (error) {
         res.status(500).json({
@@ -103,6 +124,12 @@ export const logIn = async (req,res) =>{
 
 export const logOut = async (req,res) =>{
     try {
+         res.cookie("token","",{
+            maxAge:0
+         })
+
+
+
         res.status(200).json({
             sucess:true,
             message:"Logout successful"
