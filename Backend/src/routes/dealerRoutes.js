@@ -1,5 +1,7 @@
 import express, { Router } from "express";
-import { createDealer, deleteDealer, updateDealer } from "../controllers/dealerControllers.js";
+import { createDealer, deleteDealer, getDealerProfile, updateDealer } from "../controllers/dealerControllers.js";
+import { protectRouter } from "../middlewares/protectRouter.js";
+import { isDealerOrAdmin } from "../middlewares/checkRole.js";
 
 
 
@@ -10,10 +12,13 @@ import { createDealer, deleteDealer, updateDealer } from "../controllers/dealerC
 export const dealerRouter = Router()
 
 // Create Dealer
-dealerRouter.post("/create",createDealer)
+dealerRouter.post("/create",protectRouter,createDealer)
+
+//  Get Dealer Profile
+dealerRouter.get("/profile",protectRouter, isDealerOrAdmin, getDealerProfile);
 
 // Update Dealer
-dealerRouter.put("/:id",updateDealer)
+dealerRouter.put("/",protectRouter,isDealerOrAdmin,updateDealer)
 
 // Delete Dealer
-dealerRouter.delete("/:id",deleteDealer)
+dealerRouter.delete("/",protectRouter,isDealerOrAdmin,deleteDealer)

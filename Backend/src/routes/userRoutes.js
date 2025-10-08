@@ -1,5 +1,6 @@
 import express, { Router } from "express"
-import { deleteUser, me, updateUser } from "../controllers/userControllers.js"
+import { deleteUser, profile , updateUser } from "../controllers/userControllers.js"
+import { protectRouter } from "../middlewares/protectRouter.js"
 
 
 
@@ -8,13 +9,13 @@ export const userRouter = Router()
 
 
 // Update a user 
-userRouter.put("/:id",updateUser)
+userRouter.put("/",protectRouter,updateUser)
 
 // Delete a user 
-userRouter.delete("/:id",deleteUser)
+userRouter.delete("/",protectRouter,deleteUser)
 
-// Me
-userRouter.get("/me",me)
+// Profile 
+userRouter.get("/profile",protectRouter,profile)
 
 
    

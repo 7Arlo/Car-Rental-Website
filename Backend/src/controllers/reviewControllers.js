@@ -1,20 +1,23 @@
 
 
 
-// Create review
-export const createReview = async (req,res) =>{
-    try {
-        res.status(200).json({
-           sucess:true,
-           message:"Review Created"
-        })
-    } catch (error) {
-        res.status(500).json({
+export const addReview = async (req,res)=> {
+  try {
+    res.status(200).json({
+      sucess:true,
+      message:"Review added"
+    })
+  } catch (error) {
+    res.status(500).json({
             sucess: false,
             error: "Internal Server Error",
         })
-    }
+  }
 }
+
+
+
+
 // Get all reviews
 export const getAllReviews = async (req,res) =>{
     try {
@@ -29,6 +32,9 @@ export const getAllReviews = async (req,res) =>{
         })
     }
 }
+
+
+
 // Get review ById
 export const getReviewByID = async (req,res) =>{
     try {
@@ -43,6 +49,8 @@ export const getReviewByID = async (req,res) =>{
         })
     }
 }
+
+
 // Update review 
 export const updateReview = async (req,res) =>{
     try {
@@ -57,6 +65,9 @@ export const updateReview = async (req,res) =>{
         })
     }
 }
+
+
+
 // Delete review 
 export const deleteReview = async (req,res) =>{
     try {

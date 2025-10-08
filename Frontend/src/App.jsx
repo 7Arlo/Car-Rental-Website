@@ -1,35 +1,44 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import { RouterProvider } from "react-router-dom";
+import { ToastContainer } from "react-toastify";
+import router from "./routes/AppRoutes";
+import { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import Loader from "./common/loaders/Loader";
 
-function App() {
-  const [count, setCount] = useState(0)
 
-  return (
-    <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
-}
+const App = () => {
+    const { loading } = useSelector((state) => state.auth);
+    const dispatch = useDispatch();
 
-export default App
+    
+
+    if (loading) {
+        return (
+            <Loader
+                bottomMessage="Loading the best offers and products just for you!"
+                fullPage={true}
+                size={10}
+                color="#EC4899"
+                message="Welcome to Deal-Spot!"
+            />
+        );
+    } else {
+        return (
+            <div>
+                <>
+                    <RouterProvider router={router} />
+                    <ToastContainer
+                        position="top-right"
+                        autoClose={3000}
+                        hideProgressBar={false}
+                        newestOnTop
+                        closeOnClick
+                        pauseOnHover
+                        theme="light"
+                    />
+                </>
+            </div>
+        );
+    }
+};
+export default App;

@@ -1,5 +1,5 @@
 import express, { Router } from "express";
-import { createReview, deleteReview, getAllReviews, getReviewByID, updateReview } from "../controllers/reviewControllers.js";
+import { addReview, deleteReview, getAllReviews, getReviewByID, updateReview } from "../controllers/reviewControllers.js";
 
 
 
@@ -9,7 +9,7 @@ import { createReview, deleteReview, getAllReviews, getReviewByID, updateReview 
 export const reviewRouter = Router()
 
 // Create Review
-reviewRouter.post("/create",createReview)
+reviewRouter.post("/create",addReview)
 // Get All Reviews
 reviewRouter.get("/",getAllReviews)
 // Get Review By Id 

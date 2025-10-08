@@ -4,9 +4,12 @@ import jwt from 'jsonwebtoken'
 
 
 export const generateToken = (userId,role,res)=>{
+    // creating token 
     const token = jwt.sign({
         userId,role
     },process.env.JWT_SECRET_KEY,{expiresIn:"10d"})
+
+     // Save this token in a cookie so it’s stored in the browser
 
     res.cookie("token",token,{
         maxAge: 15 * 24 * 60 * 1000,

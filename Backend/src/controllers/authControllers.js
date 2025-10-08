@@ -5,32 +5,38 @@ import { generateToken } from "../utils/generateToken.js";
 
 
 
-// Signup Controller 
+// @desc     User signup  
+// @route    POST /api/auth/signup  
+// @access   Public  
+
 export const signUp = async (req,res) =>{
     try {
         //  Step 1
+        console.log('user data',req.body)
 
         const {name,email,password,phone}= req.body || {}
         
-        //  Step 2
+        //  Step 2   Input validation: Check if all required fields are provided before creating a user
+
         if(!name||!email||!password||!phone){
             return res.status(400).json({
-                sucess:false,
+                success:false,
                 error:"All fields (name, email, password, phone) are required."
             })
         }
         
-        //  Step 3
+        //  Step 3   Regular expression to validate standard email formats
         const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
         
-        // Step 4
+        // Step 4  Validate email format using regex
+
         if(!emailRegex.test(email)){
            return res.status(400).json({
             error:"Invalid E-Mail Address"
            })
         }
 
-        // Step 5
+        // Step 5 Check if the email is already registered in the DB
        const existEmail = await User.findOne({email})
        
        // Step 6
@@ -49,12 +55,13 @@ export const signUp = async (req,res) =>{
     });
 }
 
-// Step 8 Hashing Password
- const salt= await bcrypt.genSalt(10)
- const hashedPassword = await bcrypt.hash(password,salt)
+// Step 8 Hashing Password 
+ const salt= await bcrypt.genSalt(10) 
+ const hashedPassword = await bcrypt.hash(password,salt)  // Hash the plain password
 
 
-//  Step 9 Creating New User
+
+//  Step 9 Creating New User 
 const newUser = await User.create({
     name,
     email,
@@ -74,7 +81,7 @@ return res.status(201).json({
 
     } catch (error) {
         res.status(500).json({
-            sucess: false,
+            success: false,
             error: "Internal Server Error",
         })
     }
@@ -82,10 +89,14 @@ return res.status(201).json({
 
 
 
-// Login Controller 
+
+// @desc     User login  
+// @route    POST /api/auth/login  
+// @access   Public 
 
 export const logIn = async (req,res) =>{
     try {
+        console.log("checking")
         const {email,password} = req.body || {}
 
         let existingUser
@@ -120,7 +131,11 @@ export const logIn = async (req,res) =>{
     }
 }
 
-// Logout Controller 
+
+
+// @desc     User logout  
+// @route    POST /api/auth/logout  
+// @access   Private (Authenticated Users) 
 
 export const logOut = async (req,res) =>{
     try {
@@ -141,3 +156,6 @@ export const logOut = async (req,res) =>{
         })
     }
 }
+
+
+
