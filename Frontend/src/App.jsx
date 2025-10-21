@@ -15,11 +15,11 @@ const App = () => {
     if (loading) {
         return (
             <Loader
-                bottomMessage="Loading the best offers and products just for you!"
+                bottomMessage="Finding the best cars and deals for your next ride"
                 fullPage={true}
                 size={10}
                 color="#EC4899"
-                message="Welcome to Deal-Spot!"
+                message="Welcome to Easy Drive!"
             />
         );
     } else {

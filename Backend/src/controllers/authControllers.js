@@ -12,8 +12,7 @@ import { generateToken } from "../utils/generateToken.js";
 export const signUp = async (req,res) =>{
     try {
         //  Step 1
-        console.log('user data',req.body)
-
+        
         const {name,email,password,phone}= req.body || {}
         
         //  Step 2   Input validation: Check if all required fields are provided before creating a user
@@ -96,7 +95,7 @@ return res.status(201).json({
 
 export const logIn = async (req,res) =>{
     try {
-        console.log("checking")
+        
         const {email,password} = req.body || {}
 
         let existingUser

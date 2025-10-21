@@ -4,6 +4,7 @@ import AuthLayout from "../layouts/authLayout/AuthLayout";
 import NotFound from "../pages/notfound/NotFound";
 import Login from "../pages/authpages/login/Login";
 import MainLayout from "../layouts/userLayout/MainLayout";
+import Homepage from "../pages/homepage/Homepage";
 
 
 // ─── Router Setup ─────────────────────────────────────────────────────────
@@ -13,7 +14,7 @@ const router = createBrowserRouter([
     path: "/",
     element: <MainLayout />,
     children: [
-      // { path: "", element: <Home /> },
+      { path: "", element: <Homepage /> },
     
     ],
   },

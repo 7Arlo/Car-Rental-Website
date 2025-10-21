@@ -4,6 +4,7 @@ import User from "../models/userModel.js"
 export const isAdminLogin = async (req,res,next) => {
         const {email} = req.body || {}
         const user = await User.findOne({email})
+        console.log("find user",user)
         
         if(!user){
             return res.status(404).json({

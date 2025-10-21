@@ -70,7 +70,7 @@ export default function Footer() {
         <div>
           <h4 className="font-semibold">Contact</h4>
           <p className="mt-2 text-sm">
-            0000 Car Rental <br />
+            91234 56789  Easy Drive <br />
             Kerala, India
           </p>
         </div>

@@ -1,10 +1,11 @@
 import { configureStore, combineReducers } from "@reduxjs/toolkit";
 import auth from "./slices/authSlice/authSlice"
-
+import cars from "./slices/carSlice/carSlice"
 
 // Combine all reducers
 const appReducer = combineReducers({
     auth,
+    cars,
 
 });
 

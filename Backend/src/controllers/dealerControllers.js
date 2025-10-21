@@ -135,7 +135,6 @@ export const getDealerProfile = async (req, res) => {
 // @route    PUT /api/dealer
 // @access   Admin and Dealer
 
-
 export const updateDealer = async (req, res) => {
   try {
     const userId = req.user._id;
@@ -184,7 +183,6 @@ export const updateDealer = async (req, res) => {
 // @desc     Delete Dealer
 // @route    DELETE /api/dealer
 // @access   Admin and Dealer
-
 
 export const deleteDealer = async (req, res) => {
   try {
