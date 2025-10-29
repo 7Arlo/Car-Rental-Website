@@ -1,5 +1,7 @@
+
 import axiosInstance from "../../../api/axiosInstance";
-import { logoutFail, logoutRequest, logoutSuccess } from "../../slices/authSlice";
+import { logoutFail, logoutRequest, logoutSuccess } from "../../slices/authSlice/authSlice";
+
 
 
 export const logout = () => async (dispatch) => {

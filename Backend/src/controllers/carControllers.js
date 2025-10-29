@@ -3,6 +3,7 @@ import cloudinary from "../config/Cloudnary.js";
 import Car from "../models/carModel.js";
 import Dealer from "../models/dealerModel.js";
 import Category from "../models/categoryModel.js";
+import User from "../models/userModel.js";
 
 
 
@@ -12,102 +13,118 @@ import Category from "../models/categoryModel.js";
 
 export const createCar = async (req, res) => {
   try {
+    //  Directly access user ID
     const userId = req.user._id;
 
-    // Check if dealer exists and is verified
-    const user = await Dealer.findOne({ userId: userId });
-    if (!user) {
+    console.log("Logged in user:", userId);
+
+    //  Dealer verification (check your field name in dealer model)
+    const dealer = await User.findOne({_id:userId})
+
+    if (!dealer) {
       return res.status(404).json({
         success: false,
-        error: "Unauthorized. Please log in to access this resource",
+        error: "Unauthorized. Dealer not found for this user.",
       });
     }
 
-    if (!user.verified) {
-      return res.status(403).json({
-        success: false,
-        error: "Dealer is not verified. Cannot create cars.",
-      });
-    }
-    // Check if image file is provided in the request
+    // if (!dealer.verified) {
+    //   return res.status(403).json({
+    //     success: false,
+    //     error: "Dealer is not verified. Cannot create cars.",
+    //   });
+    // }
+
+    //  Check file upload
     const file = req.file?.path;
     if (!file) {
-        res.status(400)
-       .json({
-        success:false,
-        error:"Image file is required"});
-    }
-
-     const { name, brand, category, fuelType, transmission, available } =
-      req.body;
-     console.log("data",req.body)
-    // Validate category ID presence and format
-    if (!category || !mongoose.isValidObjectId(category)) {
-        res.status(400).json({
-          success:false,
-          error:"Invalid category Id"
-        })
-        
-    }
-
-   // Upload image to Cloudinary if file provided
-    let imageUrl = "";
-    if (file) {
-        try {
-            const uploadedResult = await cloudinary.uploader.upload(file, {
-                folder: "easy-drive/cars",
-                resource_type: "image",
-            });
-            console.log("uplodresult",uploadedResult)
-            imageUrl = uploadedResult.secure_url;
-        } catch (error) {
-            res.status(500).json({
-              success:false,
-              error:"Image upload failed. Please try again."
-            })
-           
-        }
-    }
-
-    // Check if the provided category exists in DB
-    const categoryExists = await Category.findById(category);
-    if (!categoryExists) {
-        res.status(404).josn({
-          success:"false",
-          error:"Category not found"
-        })
-        
-    }
-
-    // Validate required fields
-    if (!name || !brand || !category || !fuelType || !transmission || !available ) {
       return res.status(400).json({
         success: false,
-        error: "Please fill all the required fields.",
+        error: "Image file is required.",
       });
     }
-    
-    // Create new car
-    const newCar = await Car.create({
+
+    //  Extract body fields
+    const {
       name,
       brand,
       category,
       fuelType,
       transmission,
       available,
-      image:imageUrl || ""
+      price,
+      location,
+      seats,
+      description,
+    } = req.body;
+
+    //  Validate category ID
+    if (!category || !mongoose.isValidObjectId(category)) {
+      return res.status(400).json({
+        success: false,
+        error: "Invalid category ID.",
+      });
+    }
+console.log("all fields",req.body)
+    // Validate required fields
+    if (!name || !brand || !fuelType || !transmission || !price || !location || !seats) {
+      return res.status(400).json({
+        success: false,
+        error: "Please fill all required fields.",
+      });
+    }
+
+    //  Upload to cloudinary
+    let imageUrl = "";
+    try {
+      const uploadedResult = await cloudinary.uploader.upload(file, {
+        folder: "easy-drive/cars",
+        resource_type: "image",
+      });
+      imageUrl = uploadedResult.secure_url;
+    } catch (error) {
+      console.error("Cloudinary upload error:", error);
+      return res.status(500).json({
+        success: false,
+        error: "Image upload failed. Please try again.",
+      });
+    }
+
+    // Check category exists
+    const categoryExists = await Category.findById(category);
+    if (!categoryExists) {
+      return res.status(404).json({
+        success: false,
+        error: "Category not found.",
+      });
+    }
+
+    //  Create car
+    const newCar = await Car.create({
+      name,
+      brand,
+      category,
+      fuelType,
+      transmission,
+      available: available ?? true,
+      price,
+      location,
+      seats,
+      description: description?.trim() || "",
+      image: imageUrl,
+      dealer: userId
     });
-   
+
     res.status(201).json({
       success: true,
-      message: "Car created successfully",
+      message: "Car created successfully.",
       car: newCar,
     });
   } catch (error) {
     console.error("Error creating car:", error);
     res.status(500).json({
       success: false,
-      error: "Internal Server Error",
+      error: "Internal Server Error.",
     });
   }
 };
@@ -122,20 +139,25 @@ export const createCar = async (req, res) => {
 
 export const getAllCars = async (req, res) => {
   try {
-    
-    const cars = await Car.find();
+    //  Populate category name
+    const cars = await Car.find().populate("category", "name");
+
+    const formattedCars = cars.map((car) => ({
+      ...car._doc,
+      category: car.category?.name || "Unknown",
+    }));
 
     res.status(200).json({
       success: true,
-      message: "All cars fetched successfully",
-      count:cars.length,
-      cars,
+      message: "All cars fetched successfully.",
+      count: formattedCars.length,
+      cars: formattedCars,
     });
   } catch (error) {
     console.error("Error fetching cars:", error);
     res.status(500).json({
       success: false,
-      error: "Internal Server Error",
+      error: "Internal Server Error.",
     });
   }
 };
@@ -150,8 +172,17 @@ export const getSingleCar = async (req, res) => {
   try {
     const carId = req.params.id;
 
-    // Find car by ID
-    const car = await Car.findById(carId);
+    // Validate carId format
+    if (!carId || !mongoose.isValidObjectId(carId)) {
+      return res.status(400).json({
+        success: false,
+        error: "Invalid car ID format",
+      });
+    }
+
+    //  Find car and populate category name, description, and status
+    const car = await Car.findById(carId)
+      .populate("category", "name description status");
 
     if (!car) {
       return res.status(404).json({
@@ -160,6 +191,7 @@ export const getSingleCar = async (req, res) => {
       });
     }
 
+    // ✅ Success response
     res.status(200).json({
       success: true,
       message: "Car fetched successfully",
@@ -173,6 +205,7 @@ export const getSingleCar = async (req, res) => {
     });
   }
 };
+
 
 
 // @desc     Update car
@@ -268,6 +301,51 @@ export const deleteCar = async (req, res) => {
     res.status(500).json({
       success: false,
       error: "Internal Server Error",
+    });
+  }
+};
+
+
+
+
+
+
+
+// List all available cars
+export const listAvailableCars = async (req, res) => {
+  try {
+    console.log("Fetching available cars...");
+    const cars = await Car.find({ available: true }).populate("category");
+
+    res.status(200).json({
+      success: true,
+      count: cars.length,
+      data: cars || [],
+    });
+  } catch (error) {
+    console.error("Error fetching available cars:", error);
+    res.status(500).json({
+      success: false,
+      message: "Server Error",
+    });
+  }
+};
+
+
+// Get all featured cars
+export const getFeaturedCars = async (req, res) => {
+  try {
+    const cars = await Car.find({ isFeatured: true }).populate("category");
+    res.status(200).json({
+      success: true,
+      count: cars.length,
+      data: cars || [],
+    });
+  } catch (error) {
+    console.error("Error fetching featured cars:", error);
+    res.status(500).json({
+      success: false,
+      message: "Server Error",
     });
   }
 };

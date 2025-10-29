@@ -4,13 +4,23 @@ import router from "./routes/AppRoutes";
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import Loader from "./common/loaders/Loader";
+import { loadUser } from "./redux/actions/authActions/loadUser";
+import { availableCars,} from "./redux/actions/carActions/carActios";
+import { getAllReviews } from "./redux/actions/userActions/userAction";
 
 
 const App = () => {
-    const { loading } = useSelector((state) => state.auth);
+     const { loading } = useSelector((state) => state.auth);
     const dispatch = useDispatch();
 
-    
+    useEffect(() => {
+    dispatch(availableCars())
+        const isLoggedIn = localStorage.getItem("isLoggedIn");
+        if (isLoggedIn === "true") {
+            dispatch(loadUser());
+            dispatch(getAllReviews())
+        }
+    }, [dispatch]);
 
     if (loading) {
         return (
@@ -26,6 +36,7 @@ const App = () => {
         return (
             <div>
                 <>
+                
                     <RouterProvider router={router} />
                     <ToastContainer
                         position="top-right"

@@ -7,10 +7,10 @@ import bcrypt from "bcryptjs";
 
 export const updateUser = async (req, res) => {
   try {
-    const { name, email, newpassword, currentpassword, phone, image } =
+    const { name, email, newPassword, currentPassword, phone, image } =
       req.body || {};
     const userId = req.user._id;
-
+console.log("my current password",currentPassword,req.body)
     const user = await User.findById(userId);
 
     if (!user) {
@@ -20,18 +20,18 @@ export const updateUser = async (req, res) => {
       });
     }
 
-    if (newpassword) {
-      if (newpassword.length < 6) {
+    if (newPassword) {
+      if (newPassword.length < 6) {
         return res.status(400).json({
           success: false,
           error: "Password must be at least 6 characters long",
         });
       }
       const salt = await bcrypt.genSalt(10);
-      const hashedPassword = await bcrypt.hash(newpassword, salt);
+      const hashedPassword = await bcrypt.hash(newPassword, salt);
 
       const isCurrentPasswordValid = await bcrypt.compare(
-        currentpassword,
+        currentPassword,
         user?.password
       );
 

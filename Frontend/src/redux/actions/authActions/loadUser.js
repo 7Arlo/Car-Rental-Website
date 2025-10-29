@@ -1,12 +1,14 @@
 // src/redux/actions/authActions/loadUser.js
+
 import axiosInstance from "../../../api/axiosInstance";
-import { loadUserRequest, loadUserSuccess, loadUserFail } from "../../slices/authSlice";
+
+import { loadUserFail, loadUserRequest, loadUserSuccess } from "../../slices/authSlice/authSlice";
 
 export const loadUser = () => async (dispatch) => {
     try {
         dispatch(loadUserRequest());
 
-        const { data } = await axiosInstance.get("api/v1/user/me");
+        const { data } = await axiosInstance.get("api/v1/user/profile");
 
         dispatch(loadUserSuccess(data));
     } catch (error) {

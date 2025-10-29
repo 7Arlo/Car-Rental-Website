@@ -3,17 +3,15 @@ import { useSelector } from "react-redux";
 import Loader from "../common/loaders/Loader";
 
 
-const ProtectedRoute = ({ isSeller }) => {
-    const { isAuthenticated, user, loading } = useSelector((state) => state.auth);
+const ProtectedRoute = () => {
+    const { isAuthenticated, loading } = useSelector((state) => state.auth);
 
     if (!isAuthenticated && !loading) {
         return <Navigate to="/login" replace />;
     }
 
     if (isAuthenticated) {
-        if (isSeller === true && user.role !== "seller") {
-            return <Navigate to="/login" replace />;
-        }
+    
         return (
             <div>
                 <Outlet />;

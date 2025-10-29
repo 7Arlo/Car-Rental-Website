@@ -6,6 +6,8 @@ import { dealerRouter } from "./dealerRoutes.js"
 import { carRouter } from "./carRoutes.js"
 import { categoryRouter } from "./categoryRoutes.js"
 import { reviewRouter } from "./reviewRoutes.js"
+import paymentRouter from "./paymentRoutes.js"
+import BookingRouter from "./bookingRoutes.js"
 
 
 
@@ -34,8 +36,9 @@ router.use("/category",categoryRouter)
 router.use("/review",reviewRouter)
 
 // Booking Routes 
-
+router.use("/booking",BookingRouter)
 // Payment Routes 
+router.use("/payment",paymentRouter)
 
 
 

@@ -1,33 +1,31 @@
-import mongoose from "mongoose"
+import mongoose from "mongoose";
 
-
-const categorySchema = new mongoose.Schema({
-    name:{
-        type:String,
-        required:true,
-        unique: true,
-        trim: true,
+const categorySchema = new mongoose.Schema(
+  {
+    name: {
+      type: String,
+      required: true,
+      unique: true,
+      trim: true,
     },
-    description:{
-        type:String,
-        required:false,
-
+    description: {
+      type: String,
+      required: false,
     },
-    image:{
-        type:String,
-        default:""
+    image: {
+      type: String,
+      default: "",
     },
     status: {
       type: String,
       enum: ["active", "inactive"],
       default: "active",
-    }
+    },
+  },
+  { timestamps: true }
+);
 
-},{
-    timestamps:true
-})
+// 👇 Capitalize model name for consistency
+const Category = mongoose.model("Category", categorySchema);
 
-
-const Category = mongoose.model("category",categorySchema)
-
-export default Category
+export default Category;
