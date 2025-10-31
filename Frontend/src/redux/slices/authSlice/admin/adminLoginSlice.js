@@ -14,18 +14,18 @@ const authSlice = createSlice({
     initialState,
     reducers: {
         // Login
-        loginRequest: (state) => {
+        adminLoginRequest: (state) => {
             state.loading = true;
             state.error = null;
         },
-        loginSuccess: (state, action) => {
+        adminLoginSuccess: (state, action) => {
             state.loading = false;
             state.user = action.payload.user;
             state.isAdminLogin = true;
             state.loginMessage = true;
-            sessionStorage.setItem("admin", "true");
+            localStorage.setItem("admin","true");
         },
-        loginFail: (state, action) => {
+        adminLoginFail: (state, action) => {
             state.loading = false;
             state.error = action.payload;
             state.isAdminLogin = false;
@@ -41,9 +41,9 @@ const authSlice = createSlice({
 });
 
 export const {
-    loginRequest,
-    loginSuccess,
-    loginFail,
+    adminLoginRequest,
+    adminLoginSuccess,
+    adminLoginFail,
     clearAuthStateMessage,
 } = authSlice.actions;
 

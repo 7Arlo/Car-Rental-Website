@@ -25,6 +25,7 @@ const authSlice = createSlice({
             state.isAuthenticated = true;
             state.loginMessage=true
             localStorage.setItem("isLoggedIn","true");
+            localStorage.setItem("admin", "false");
      
         },
         loginFail: (state, action) => {
@@ -59,6 +60,7 @@ const authSlice = createSlice({
             state.user = action.payload.user;
             state.isAuthenticated = true;
             localStorage.setItem("isLoggedIn", "true");
+            localStorage.setItem("admin", "false");
         },
         registerFail: (state, action) => {
             state.loading = false;
@@ -77,12 +79,14 @@ const authSlice = createSlice({
             state.isAuthenticated = false;
             state.loginMessage=null;
             localStorage.removeItem("isLoggedIn");
+            localStorage.removeItem("admin")
         },
         logoutFail: (state, action) => {
             state.loading = false;
             state.error = action.payload;
             state.isAuthenticated = false;
             localStorage.removeItem("isLoggedIn")
+            localStorage.removeItem("admin")
         },
 
     },
